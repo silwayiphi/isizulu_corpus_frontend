@@ -1,0 +1,173 @@
+/* src/main/corpus.css */
+:root{
+  --bg: #f5f6fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --primary: #2b50ec;
+  --primary-ghost: #e8ecff;
+  --ring: 0 0 0 3px rgba(43,80,236,0.15);
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.cp-wrap{
+  max-width: 1100px;
+  margin: 24px auto 60px;
+  padding: 0 20px;
+  color:#0f172a;
+}
+
+/* two cards + arrow */
+.cp-row{
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  gap: 20px;
+  align-items: stretch;     /* same height */
+  min-height: 320px;        /* tweak as you like */
+}
+
+.cp-arrow{
+  text-align:center;
+  font-size: 28px;
+  color: #9aa2b1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* CARD */
+.card{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid #eef0f5;
+
+  /* KEY: let children (header + textarea) stack and fill */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;         /* keeps rounded corners on textarea focus */
+}
+
+/* header with the language select */
+.card-top{
+  display:flex;
+  justify-content:flex-end;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f3f7;
+  background: #fff;
+}
+
+.select{
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e3e7ef;
+  background:#fff;
+  font-weight:500;
+}
+.select:focus{ outline: none; box-shadow: var(--ring); }
+
+/* TEXTAREA fills the rest of the card */
+.textarea{
+  flex: 1;                 /* take remaining vertical space */
+  width: 100%;
+  height: auto;            /* let flex control height */
+  border: 0;
+  background: #f9fafc;
+  padding: 16px;
+  font-size: 20px;
+  color:#1f2937;
+  resize: none;            /* prevent manual resizing breaking layout */
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.textarea:focus{ outline: none; box-shadow: inset var(--ring); background:#fff; }
+
+/* pills / panels unchanged */
+.cp-pills{
+  display:flex;
+  gap: 10px;
+  margin: 18px 0 10px;
+  flex-wrap: wrap;
+}
+
+.pill{
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--primary-ghost);
+  border: 1px solid #dfe5ff;
+  color: #26336e;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill--active{
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.cp-panels{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.panel{
+  background:#f0f2f7;
+  border:1px solid #cfd6e7;
+  border-radius: 10px;
+  padding: 12px;
+}
+.panel-title{
+  font-size: 16px;
+  margin: 0 0 8px 0;
+}
+.panel-body{
+  background:#ebeff7;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.cp-list{
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.7;
+}
+
+/* toolbar for language select inside panels */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.toolbar-label { font-weight: 600; color: #334155; }
+
+.syn-wrap { display: grid; gap: 12px; }
+.syn-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  min-width: 200px;
+  height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #e3e7ef;
+  border-radius: 10px;
+}
+
+.btn {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #2b50ec;
+  background: #2b50ec;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.muted { color: #6b7280; }

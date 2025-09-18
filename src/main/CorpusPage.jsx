@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import "./corpus.css";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-/** ===================== Helpers (no big static DATA) ===================== **/
 
-// Minimal built-in translations for famous isiZulu phrases (extend as needed)
 const ZU_TRANSLATIONS = {
   "umuntu ngumuntu ngabantu": {
     translation: "A person is a person through other people.",
@@ -38,29 +38,29 @@ const ZU_TRANSLATIONS = {
   },
 };
 
-// 🎯 Synonyms / near-synonyms / related terms (expand as needed)
+
 const ZU_SYNONYMS = {
-  umuntu: ["isakhamuzi", "inhlali"],                 // person → citizen/resident (near)
-  abantu: ["umphakathi"],                             // people → community (related)
-  hamba: ["suka", "phuma", "dlula"],                  // go → leave, go out, pass
-  woza: ["sondela", "ngena", "buya"],                 // come → approach, enter, come back
-  inhlonipho: ["ukuhlonipha", "izinhlonipho"],        // respect (noun) ↔ respect (verb/derivation)
-  ubuntu: ["ubunye", "umoya womphakathi"],           // ubuntu → unity, community spirit
-  ukufunda: ["ukutadisha", "ukufunda izincwadi"],    // study/read (near)
-  umsebenzi: ["imisebenzi", "ukusebenza"],           // work (noun) ↔ work (verb/related)
-  ukudla: ["ukudla okusanhlamvu", "ukudla okumnandi"]// food → food-grains, tasty food (related theme)
+  umuntu: ["isakhamuzi", "inhlali"],                 
+  abantu: ["umphakathi"],                             
+  hamba: ["suka", "phuma", "dlula"],                  
+  woza: ["sondela", "ngena", "buya"],                 
+  inhlonipho: ["ukuhlonipha", "izinhlonipho"],        
+  ubuntu: ["ubunye", "umoya womphakathi"],           
+  ukufunda: ["ukutadisha", "ukufunda izincwadi"],   
+  umsebenzi: ["imisebenzi", "ukusebenza"],           
+  ukudla: ["ukudla okusanhlamvu", "ukudla okumnandi"]
 };
 
 const normalize = (s) => s.toLowerCase().trim().replace(/[.!?]+$/g, "");
 
-// Tokenize isiZulu text: keep Unicode letters; drop punctuation/numbers
+
 const tokenize = (text) => {
   const t = text.toLowerCase();
   const matches = t.match(/\p{L}+/gu);
   return matches ? matches : [];
 };
 
-// Unique items, preserve order
+
 const uniq = (arr) => {
   const seen = new Set();
   const out = [];
@@ -68,7 +68,7 @@ const uniq = (arr) => {
   return out;
 };
 
-// Bigram list from tokens
+
 const bigrams = (tokens) => {
   const out = [];
   for (let i = 0; i < tokens.length - 1; i++) out.push([tokens[i], tokens[i + 1]]);
@@ -86,16 +86,16 @@ const freqRowsFrom = (tokens) => {
 
 const cap = (w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w);
 
-// --- Light isiZulu heuristics for usage synthesis ---
-const isPluralPeople = (w) => w.startsWith("aba");               // abantu, abafundi, abahlali...
-const isPersonNoun = (w) => w === "umuntu" || w.startsWith("umu"); // umuntu, umfundi, umholi...
-const isInfinitive = (w) => w.startsWith("uku");                 // ukudla, ukufunda, ukusebenza...
+
+const isPluralPeople = (w) => w.startsWith("aba");               
+const isPersonNoun = (w) => w === "umuntu" || w.startsWith("umu"); 
+const isInfinitive = (w) => w.startsWith("uku");                 
 const isInterjection = (w) => ["woza", "hamba", "ngiyabonga", "sawubona"].includes(w);
 
 function genUsageForWord(word) {
   const w = word.toLowerCase();
 
-  // Hand-tuned special cases
+ 
   if (w === "umuntu") {
     return [
       "Umuntu ohloniphayo uyathandeka.",
@@ -112,7 +112,7 @@ function genUsageForWord(word) {
   if (w === "woza") return ["Woza lapha!", "Woza sizodla ndawonye."];
   if (w === "hamba") return ["Hamba kahle.", "Hamba kancane, sicela."];
 
-  // Heuristic patterns
+  
   if (isPluralPeople(w)) {
     return [
       `${cap(w)} abahloniphayo bayamukeleka.`,
@@ -135,39 +135,36 @@ function genUsageForWord(word) {
     return [`${cap(w)} manje!`, `${cap(w)} sonke.`];
   }
 
-  // Safe fallbacks
+  
   return [
     `Ngiyathanda ${w}.`,
     `${cap(w)} wami.`,
   ];
 }
 
-// Synonyms fetcher with graceful fallback
+
 function genSynonymsForWord(word) {
   const w = word.toLowerCase();
   if (ZU_SYNONYMS[w] && ZU_SYNONYMS[w].length) return ZU_SYNONYMS[w];
-  // Simple heuristics to propose related terms if unknown
-  if (isPersonNoun(w)) return ["umuntu omdala", "umuntu osemusha"]; // descriptive near-terms
+  
+  if (isPersonNoun(w)) return ["umuntu omdala", "umuntu osemusha"]; 
   if (isPluralPeople(w)) return ["umphakathi", "izakhamuzi"];
-  if (isInfinitive(w)) return [`${w} kahle`, `${w} kakhulu`]; // adverbial variants
-  return []; // unknown → no chips shown
+  if (isInfinitive(w)) return [`${w} kahle`, `${w} kakhulu`]; 
+  return []; 
 }
 
-/** ===================== Component ===================== **/
+
 
 export default function CorpusPage() {
   const [query, setQuery] = useState("");
+  const pdfRef = useRef(null); 
 
-  // Derived data
   const tokens = useMemo(() => tokenize(query), [query]);
   const vocab = useMemo(() => uniq(tokens), [tokens]);
   const bigramPairs = useMemo(() => bigrams(tokens), [tokens]);
   const freqRows = useMemo(() => freqRowsFrom(tokens), [tokens]);
-
-  // Known proverb hit (optional rich card)
   const hit = useMemo(() => ZU_TRANSLATIONS[normalize(query)] || null, [query]);
 
-  // Featured translation (falls back gracefully)
   const featured = useMemo(() => {
     if (!query.trim()) return { primary: "", secondary: "" };
     if (hit) {
@@ -182,7 +179,6 @@ export default function CorpusPage() {
     };
   }, [query, hit]);
 
-  // Usage examples & synonyms per vocab item
   const usageByWord = useMemo(() => {
     const out = {};
     for (const w of vocab) out[w] = genUsageForWord(w);
@@ -195,16 +191,58 @@ export default function CorpusPage() {
     return out;
   }, [vocab]);
 
+  // NEW: robust PDF export (multi-page if content is tall)
+  const exportPDF = async () => {
+    const node = pdfRef.current;
+    if (!node) return;
+
+    // Temporarily add a white background for clean PDF
+    node.classList.add("pdf-snapshot-bg");
+    // Give layout a tick to apply styles
+    await new Promise(r => setTimeout(r, 0));
+
+    const canvas = await html2canvas(node, {
+      scale: 2,              // sharper text
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      logging: false,
+      windowWidth: document.documentElement.scrollWidth,
+    });
+
+    node.classList.remove("pdf-snapshot-bg");
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft * -1; // shift the image up to show the next slice
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save(`zulu_corpus_${Date.now()}.pdf`);
+  };
+
   return (
     <div className="corpus-wrap">
-      {/* Header */}
       <header className="hero">
         <p className="hero-sub">
           Bhala umusho ngesiZulu (isb. <em>Umuntu ngumuntu ngabantu</em>).
         </p>
       </header>
 
-      {/* Input */}
       <div className="searchbar card">
         <input
           className="search-input"
@@ -213,198 +251,209 @@ export default function CorpusPage() {
           onChange={(e) => setQuery(e.target.value)}
           aria-label="IsiZulu input"
         />
+
+        {/* Download toolbar */}
+        <div className="download-toolbar">
+          <button className="btn" onClick={exportPDF} aria-label="Download PDF">
+            Download PDF
+          </button>
+        </div>
       </div>
 
-      {/* Featured translation */}
-      <section className="featured card">
-        <div className="featured-content">
-          <h2 className="featured-primary">{featured.primary}</h2>
-          {featured.secondary ? (
-            <p className="featured-secondary">{featured.secondary}</p>
-          ) : null}
-        </div>
-      </section>
-
-      {/* Rich proverb card if applicable */}
-      {hit && (
-        <section className="result-card card">
-          <div className="result-header">
-            <h3 className="result-title">{cap(query.trim())}</h3>
-            <div className="result-meta">
-              <span className="badge">{hit.language}</span>
-              <span className="dot">•</span>
-              <span className="muted">{hit.partOfSpeech}</span>
-            </div>
-          </div>
-
-          <div className="result-body">
-            <div className="result-row">
-              <div className="result-label">Pronunciation</div>
-              <div className="result-value">{hit.pronunciation}</div>
-            </div>
-
-            {hit.culturalNote && (
-              <div className="result-row">
-                <div className="result-label">Cultural note</div>
-                <div className="result-value">{hit.culturalNote}</div>
-              </div>
-            )}
-
-            {hit.morphology?.length ? (
-              <div className="result-row">
-                <div className="result-label">Morphology</div>
-                <ul className="morph-list">
-                  {hit.morphology.map((m, i) => (
-                    <li key={i}>
-                      <code>{m.piece}</code> — <span className="muted">{m.gloss}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* Wrap ONLY what you want in the PDF */}
+      <div ref={pdfRef}>
+        <section className="featured card">
+          <div className="featured-content">
+            <h2 className="featured-primary">{featured.primary}</h2>
+            {featured.secondary ? (
+              <p className="featured-secondary">{featured.secondary}</p>
             ) : null}
-
-            {hit.usage?.length ? (
-              <div className="result-row">
-                <div className="result-label">Usage</div>
-                <ul className="cp-sublist">
-                  {hit.usage.map((ex, i) => (
-                    <li key={i}>
-                      <span>{ex.zu}</span>
-                      <div className="muted">— {ex.en}</div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {hit.related?.length ? (
-              <div className="result-row">
-                <div className="result-label">Related</div>
-                <ul className="tag-list">
-                  {hit.related.map((r, i) => (
-                    <li key={i} className="tag">
-                      {r.term}
-                      {r.note ? <span className="muted"> — {r.note}</span> : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            <div className="result-tags">
-              {(hit.tags || []).map((t) => (
-                <span key={t} className="chip">{t}</span>
-              ))}
-            </div>
           </div>
         </section>
-      )}
 
-      {/* Vocabulary + Synonyms */}
-      <section className="section card">
-        <div className="section-header">
-          <h3 className="section-title">Vocabulary (amagama akule ndima) - Izifaniso Zamagama</h3>
-          <span className="count-badge">{vocab.length}</span>
-        </div>
-        {vocab.length ? (
-          <ol className="cp-list">
-            {vocab.map((w) => (
-              <li key={w}>
-                <div className="vocab-row">
-                  <span className="vocab-word">{w}</span>
-                  {synsByWord[w]?.length ? (
-                    <div className="syn-chips">
-                      {synsByWord[w].map((s) => (
-                        <span key={s} className="chip">{s}</span>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="muted" style={{marginLeft: 8, fontSize: ".9rem"}}>— (akukho izifanisi ezitholakele)</span>
-                  )}
+        {hit && (
+          <section className="result-card card">
+            <div className="result-header">
+              <h3 className="result-title">{cap(query.trim())}</h3>
+              <div className="result-meta">
+                <span className="badge">{hit.language}</span>
+                <span className="dot">•</span>
+                <span className="muted">{hit.partOfSpeech}</span>
+              </div>
+            </div>
+
+            <div className="result-body">
+              {/* Only show pronunciation if defined */}
+              {hit.pronunciation && (
+                <div className="result-row">
+                  <div className="result-label">Pronunciation</div>
+                  <div className="result-value">{hit.pronunciation}</div>
                 </div>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <div className="muted">Bhala umusho ngenhla ukuze sibonise amagama nezifanisi.</div>
-        )}
-      </section>
+              )}
 
-      {/* Usage examples (generated) */}
-      <section className="section card">
-        <div className="section-header">
-          <h3 className="section-title">Word Usage (izibonelo zokusetshenziswa)</h3>
-        </div>
-        {vocab.length ? (
-          <ul className="cp-list">
-            {vocab.map((w) => (
-              <li key={w}>
-                <strong className="word-head">{w}</strong>
-                <ul className="cp-sublist">
-                  {usageByWord[w].map((sent, i) => (
-                    <li key={i}><span>{sent}</span></li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="muted">Sizokwakhela imisho emisha elisebenzisa igama ngalinye.</div>
-        )}
-      </section>
+              {hit.culturalNote && (
+                <div className="result-row">
+                  <div className="result-label">Cultural note</div>
+                  <div className="result-value">{hit.culturalNote}</div>
+                </div>
+              )}
 
-      {/* Commonly paired words (bigrams) */}
-      <section className="section card">
-        <div className="section-header">
-          <h3 className="section-title">Common Pairs (amaphere / bigrams)</h3>
-          <span className="count-badge">{Math.max(0, bigramPairs.length)}</span>
-        </div>
-        {bigramPairs.length ? (
-          <ul className="cp-list pairs">
-            {bigrampairs_map(bigramPairs)}
-          </ul>
-        ) : (
-          <div className="muted">Faka okungenani amagama amabili ukuze kuvele amaphere.</div>
-        )}
-      </section>
+              {hit.morphology?.length ? (
+                <div className="result-row">
+                  <div className="result-label">Morphology</div>
+                  <ul className="morph-list">
+                    {hit.morphology.map((m, i) => (
+                      <li key={i}>
+                        <code>{m.piece}</code> — <span className="muted">{m.gloss}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
-      {/* Word frequency */}
-      <section className="section card">
-        <div className="section-header">
-          <h3 className="section-title">Word Frequency (izikhathi zamagama)</h3>
-          <span className="count-badge">{freqRows.length}</span>
-        </div>
-        {freqRows.length ? (
-          <div className="table-wrap">
-            <table className="table">
-              <thead>
-                <tr><th>Igama</th><th>Izikhathi</th></tr>
-              </thead>
-              <tbody>
-                {freqRows.map(({ word, count }) => (
-                  <tr key={word}>
-                    <td>{word}</td>
-                    <td className="muted">{count}</td>
-                  </tr>
+              {hit.usage?.length ? (
+                <div className="result-row">
+                  <div className="result-label">Usage</div>
+                  <ul className="cp-sublist">
+                    {hit.usage.map((ex, i) => (
+                      <li key={i}>
+                        <span>{ex.zu}</span>
+                        <div className="muted">— {ex.en}</div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {hit.related?.length ? (
+                <div className="result-row">
+                  <div className="result-label">Related</div>
+                  <ul className="tag-list">
+                    {hit.related.map((r, i) => (
+                      <li key={i} className="tag">
+                        {r.term}
+                        {r.note ? <span className="muted"> — {r.note}</span> : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              <div className="result-tags">
+                {(hit.tags || []).map((t) => (
+                  <span key={t} className="chip">{t}</span>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="muted">Lapha sizokhombisa imvamisa yamagama akho.</div>
+              </div>
+            </div>
+          </section>
         )}
-      </section>
 
-      <footer className="footer">
-        <span className="muted">
-          © {new Date().getFullYear()} Zulu Corpus Service System. All rights reserved.
-        </span>
-      </footer>
+        {/* Vocabulary + Synonyms */}
+        <section className="section card">
+          <div className="section-header">
+            <h3 className="section-title">Vocabulary (amagama akule ndima) - Izifaniso Zamagama</h3>
+            <span className="count-badge">{vocab.length}</span>
+          </div>
+          {vocab.length ? (
+            <ol className="cp-list">
+              {vocab.map((w) => (
+                <li key={w}>
+                  <div className="vocab-row">
+                    <span className="vocab-word">{w}</span>
+                    {synsByWord[w]?.length ? (
+                      <div className="syn-chips">
+                        {synsByWord[w].map((s) => (
+                          <span key={s} className="chip">{s}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="muted" style={{marginLeft: 8, fontSize: ".9rem"}}>— (akukho izifanisi ezitholakele)</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="muted">Bhala umusho ngenhla ukuze sibonise amagama nezifanisi.</div>
+          )}
+        </section>
+
+        {/* Usage examples (generated) */}
+        <section className="section card">
+          <div className="section-header">
+            <h3 className="section-title">Word Usage (izibonelo zokusetshenziswa)</h3>
+          </div>
+          {vocab.length ? (
+            <ul className="cp-list">
+              {vocab.map((w) => (
+                <li key={w}>
+                  <strong className="word-head">{w}</strong>
+                  <ul className="cp-sublist">
+                    {usageByWord[w].map((sent, i) => (
+                      <li key={i}><span>{sent}</span></li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="muted">Sizokwakhela imisho emisha elisebenzisa igama ngalinye.</div>
+          )}
+        </section>
+
+        {/* Commonly paired words (bigrams) */}
+        <section className="section card">
+          <div className="section-header">
+            <h3 className="section-title">Common Pairs (amaphere / bigrams)</h3>
+            <span className="count-badge">{Math.max(0, bigramPairs.length)}</span>
+          </div>
+          {bigramPairs.length ? (
+            <ul className="cp-list pairs">
+              {bigrampairs_map(bigramPairs)}
+            </ul>
+          ) : (
+            <div className="muted">Faka okungenani amagama amabili ukuze kuvele amaphere.</div>
+          )}
+        </section>
+
+        {/* Word frequency */}
+        <section className="section card">
+          <div className="section-header">
+            <h3 className="section-title">Word Frequency (izikhathi zamagama)</h3>
+            <span className="count-badge">{freqRows.length}</span>
+          </div>
+          {freqRows.length ? (
+            <div className="table-wrap">
+              <table className="table">
+                <thead>
+                  <tr><th>Igama</th><th>Izikhathi</th></tr>
+                </thead>
+                <tbody>
+                  {freqRows.map(({ word, count }) => (
+                    <tr key={word}>
+                      <td>{word}</td>
+                      <td className="muted">{count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="muted">Lapha sizokhombisa imvamisa yamagama akho.</div>
+          )}
+        </section>
+
+        <footer className="footer">
+          <span className="muted">
+            © {new Date().getFullYear()} Zulu Corpus Service System. All rights reserved.
+          </span>
+        </footer>
+      </div>
     </div>
   );
 }
 
-/** Small renderer helper for bigrams to keep JSX tidy */
+// unchanged
 function bigrampairs_map(pairs) {
   return pairs.map(([a, b], i) => (
     <li key={`${a}-${b}-${i}`} className="pair-item">

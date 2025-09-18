@@ -213,3 +213,41 @@ body {
 .vocab-row { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; }
 .vocab-word { font-weight:600; padding:.08rem .35rem; border-radius:8px; background: var(--chip); border:1px solid var(--border); }
 .syn-chips { display:flex; flex-wrap:wrap; gap:.35rem; margin-left:.25rem; }
+
+/* Download toolbar */
+.download-toolbar {
+  display: flex;
+  gap: .5rem;
+}
+.btn {
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--fg);
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.btn:hover { transform: translateY(-1px); border-color: color-mix(in lab, var(--primary) 35%, var(--border)); }
+
+/* Ensure white background when exporting so text is readable on print */
+.pdf-snapshot-bg {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+.pdf-snapshot-bg .card,
+.pdf-snapshot-bg .table,
+.pdf-snapshot-bg .pairs .pair-item,
+.pdf-snapshot-bg .search-input {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  box-shadow: none !important;
+}
+.pdf-snapshot-bg .chip,
+.pdf-snapshot-bg .vocab-word,
+.pdf-snapshot-bg .word-head {
+  background: #f3f4f6 !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+.pdf-snapshot-bg .muted { color: #6b7280 !important; }

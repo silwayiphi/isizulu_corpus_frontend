@@ -251,13 +251,6 @@ export default function CorpusPage() {
           onChange={(e) => setQuery(e.target.value)}
           aria-label="IsiZulu input"
         />
-
-        {/* Download toolbar */}
-        <div className="download-toolbar">
-          <button className="btn" onClick={exportPDF} aria-label="Download PDF">
-            Download PDF
-          </button>
-        </div>
       </div>
 
       {/* Wrap ONLY what you want in the PDF */}
@@ -442,6 +435,21 @@ export default function CorpusPage() {
             <div className="muted">Lapha sizokhombisa imvamisa yamagama akho.</div>
           )}
         </section>
+          <div className="bead-divider" aria-hidden="true">
+                <span className="dot r"></span>
+                <span className="dot y"></span>
+                <span className="dot g"></span>
+                <span className="dot b"></span>
+                <span className="dot w"></span>
+                <span className="dot k"></span>
+          </div>
+          <div className="bottom-bar">
+            <div className="bottom-bar-inner">
+              <button className="btn btn-izulu" onClick={exportPDF} aria-label="Download PDF">
+                ⤓ Download PDF
+              </button>
+            </div>
+          </div>
 
         <footer className="footer">
           <span className="muted">
@@ -458,7 +466,7 @@ function bigrampairs_map(pairs) {
   return pairs.map(([a, b], i) => (
     <li key={`${a}-${b}-${i}`} className="pair-item">
       <span className="pair">{a}</span>
-      <span className="arrow">→</span>
+      <span className="arrow"> </span>
       <span className="pair">{b}</span>
     </li>
   ));

@@ -1,17 +1,29 @@
-/* ============ Design Tokens ============ */
+/* ============ Design Tokens (isiZulu beadwork palette) ============ */
 :root {
-  --bg: #0b0f14;
-  --bg-elev: #11161d;
-  --card: #0f141b;
-  --fg: #e8eef7;
-  --muted: #9aa8bc;
-  --primary: #7aa2ff;
-  --accent: #5eead4;
-  --border: #1c2530;
-  --chip: #0b1a2a;
+  /* Deep charcoal night with subtle indigo tint */
+  --bg: #0b0e12;
+  --bg-elev: #11161c;
+  --card: #0f141a;
+  --fg: #f1f5f9;
+  --muted: #93a3b5;
+
+  /* Beadwork accents: red, yellow, green, blue, white, black */
+  --bead-red:   #e11d48; /* amacici red */
+  --bead-yellow:#f59e0b;
+  --bead-green: #16a34a;
+  --bead-blue:  #3b82f6;
+  --bead-white: #f8fafc;
+  --bead-black: #0b0e12;
+
+  /* Primary/accent lean blue/green like refined bead glass */
+  --primary: #3b82f6;
+  --accent:  #22d3ee;
+
+  --border: #1b2430;
+  --chip:   #0b1a2a;
   --shadow: 0 10px 30px rgba(0,0,0,.35);
 
-  --radius-lg: 16px;
+  --radius-lg: 18px;
   --radius-md: 12px;
   --radius-sm: 10px;
 
@@ -22,19 +34,20 @@
   --transition: 200ms ease;
 }
 
-/* Light mode tweak (optional) */
+/* Optional light mode that still nods to beadwork */
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #f6f8fb;
+    --bg: #fafafa;
     --bg-elev: #ffffff;
     --card: #ffffff;
     --fg: #0f1720;
     --muted: #4b5563;
-    --primary: #3b82f6;
-    --accent: #06b6d4;
-    --border: #e6eaf0;
-    --chip: #eef2ff;
-    --shadow: 0 8px 24px rgba(2, 8, 23, 0.08);
+
+    --primary: #2563eb;
+    --accent:  #0ea5e9;
+    --border:  #e6eaf0;
+    --chip:    #eef2ff;
+    --shadow:  0 8px 24px rgba(2, 8, 23, 0.08);
   }
 }
 
@@ -42,7 +55,9 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  background: linear-gradient(180deg, var(--bg) 0%, #0b1118 100%);
+  background:
+    linear-gradient(180deg, var(--bg) 0%, #0a1118 100%),
+    radial-gradient(90% 50% at 0% 0%, rgba(59,130,246,.08), transparent 60%);
   color: var(--fg);
   font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -51,65 +66,71 @@ body {
 
 .corpus-wrap {
   max-width: 980px;
-  margin: 48px auto;
+  margin: 48px auto 88px; /* leave space so content isn't under the sticky bar */
   padding: 0 20px 40px;
 }
 
 /* ============ Cards & Surfaces ============ */
 .card {
-  background: radial-gradient(80% 120% at 0% 0%, rgba(122,162,255,.07), transparent 60%),
-              radial-gradient(70% 100% at 100% 0%, rgba(94,234,212,.06), transparent 55%),
-              var(--card);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(59,130,246,.08), transparent 60%),
+    radial-gradient(90% 120% at 100% 0%, rgba(34,211,238,.07), transparent 55%),
+    var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--pad-lg);
   box-shadow: var(--shadow);
   transition: border-color var(--transition), transform var(--transition);
+  position: relative;
+}
+.card::after {
+  /* subtle geometric bead chevron trim */
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  height: 6px;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  background:
+    repeating-linear-gradient(90deg,
+      var(--bead-red) 0 10px,
+      var(--bead-yellow) 10px 20px,
+      var(--bead-green) 20px 30px,
+      var(--bead-blue) 30px 40px,
+      var(--bead-white) 40px 50px,
+      var(--bead-black) 50px 60px);
+  opacity: .18;
+  pointer-events: none;
 }
 .card:hover { border-color: color-mix(in lab, var(--primary) 30%, var(--border)); transform: translateY(-1px); }
 
 .section { margin: 18px 0; }
 
 .section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: .75rem;
-  margin-bottom: .5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; margin-bottom: .5rem;
 }
 .section-title {
-  margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: .2px;
+  margin: 0; font-size: 1.05rem; letter-spacing: .2px;
+  background: linear-gradient(90deg, var(--fg), color-mix(in lab, var(--primary) 35%, var(--fg)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
 /* ============ Header ============ */
 .hero-title {
-  margin: 0 0 .35rem 0;
-  font-weight: 700;
-  font-size: 1.6rem;
-  letter-spacing: .3px;
-  background: linear-gradient(90deg, var(--fg), color-mix(in lab, var(--primary) 35%, var(--fg)));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  margin: 0 0 .35rem 0; font-weight: 800; font-size: 1.7rem; letter-spacing: .3px;
+  background: linear-gradient(90deg, var(--bead-red), var(--bead-yellow), var(--bead-green), var(--bead-blue));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.35));
 }
 .hero-sub { margin: 0 0 1rem; color: var(--muted); }
 
 /* ============ Search ============ */
-.searchbar {
-  display: grid;
-  gap: .6rem;
-  margin: 14px 0 18px;
-}
+.searchbar { display: grid; gap: .6rem; margin: 14px 0 18px; }
 .search-input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--fg);
-  background: var(--bg-elev);
-  outline: none;
+  width: 100%; padding: 14px 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  color: var(--fg); background: var(--bg-elev); outline: none;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 .search-input:focus {
@@ -118,17 +139,9 @@ body {
 }
 
 /* ============ Featured Translation ============ */
-.featured {
-  display: grid;
-  gap: .35rem;
-  margin-bottom: 12px;
-}
+.featured { display: grid; gap: .35rem; margin-bottom: 12px; }
 .featured-content { display: grid; gap: .35rem; }
-.featured-primary {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 650;
-}
+.featured-primary { margin: 0; font-size: 1.35rem; font-weight: 700; }
 .featured-secondary { margin: 0; color: var(--muted); }
 
 /* ============ Proverb Result Card ============ */
@@ -152,25 +165,17 @@ body {
 }
 
 /* ============ Lists & Table ============ */
-.cp-list {
-  margin: .25rem 0 0 1.05rem;
-  padding: 0;
-}
+.cp-list { margin: .25rem 0 0 1.05rem; padding: 0; }
 .cp-sublist { margin: .35rem 0 0 1.05rem; padding: 0; list-style: disc; }
 .cp-sublist li { margin-bottom: .42rem; line-height: 1.45; }
 .word-head { display: inline-block; padding: .08rem .35rem; border-radius: 8px; background: var(--chip); border: 1px solid var(--border); }
 
 .pairs .pair-item {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: .28rem .5rem;
-  margin: .18rem .35rem .18rem 0;
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 12px; padding: .28rem .5rem; margin: .18rem .35rem .18rem 0;
 }
-.pair { font-weight: 500; }
+.pair { font-weight: 600; }
 .arrow { color: var(--muted); }
 
 .table-wrap { overflow: auto; border-radius: 12px; border: 1px solid var(--border); }
@@ -198,6 +203,22 @@ body {
 /* Text utilities */
 .muted { color: var(--muted); }
 
+/* Decorative bead divider */
+.bead-divider {
+  display: flex; gap: .4rem; justify-content: center; align-items: center;
+  margin: 22px 0 10px;
+}
+.bead-divider .dot {
+  width: 10px; height: 10px; border-radius: 999px; display: inline-block;
+  border: 1px solid var(--border);
+}
+.bead-divider .dot.r { background: var(--bead-red); }
+.bead-divider .dot.y { background: var(--bead-yellow); }
+.bead-divider .dot.g { background: var(--bead-green); }
+.bead-divider .dot.b { background: var(--bead-blue); }
+.bead-divider .dot.w { background: var(--bead-white); }
+.bead-divider .dot.k { background: var(--bead-black); }
+
 /* Footer */
 .footer {
   margin-top: 18px;
@@ -206,48 +227,133 @@ body {
 }
 
 /* Motion polish */
-.card, .search-input, .pair-item, .chip {
-  will-change: transform, border-color, box-shadow;
-}
-
+.card, .search-input, .pair-item, .chip { will-change: transform, border-color, box-shadow; }
 .vocab-row { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; }
-.vocab-word { font-weight:600; padding:.08rem .35rem; border-radius:8px; background: var(--chip); border:1px solid var(--border); }
+.vocab-word { font-weight:700; padding:.08rem .35rem; border-radius:8px; background: var(--chip); border:1px solid var(--border); }
 .syn-chips { display:flex; flex-wrap:wrap; gap:.35rem; margin-left:.25rem; }
 
-/* Download toolbar */
-.download-toolbar {
-  display: flex;
-  gap: .5rem;
+/* ============ Bottom sticky bar ============ */
+.bottom-bar {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  padding: 0 12px 12px;
+  margin-top: 24px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.25));
+  backdrop-filter: blur(8px);
 }
+.bottom-bar-inner {
+  max-width: 980px; margin: 0 auto;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 14px;
+  padding: .6rem .8rem;
+  display: flex; justify-content: center;
+}
+
+/* Buttons */
 .btn {
-  padding: .55rem .9rem;
-  border-radius: 10px;
+  padding: .6rem 1rem;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg-elev);
   color: var(--fg);
   cursor: pointer;
-  transition: transform var(--transition), border-color var(--transition);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  font-weight: 600;
 }
 .btn:hover { transform: translateY(-1px); border-color: color-mix(in lab, var(--primary) 35%, var(--border)); }
 
-/* Ensure white background when exporting so text is readable on print */
-.pdf-snapshot-bg {
-  background: #ffffff !important;
-  color: #111827 !important;
+/* isiZulu bead accent button */
+.btn-izulu {
+  border: 1px solid color-mix(in lab, var(--bead-blue) 60%, var(--border));
+  background:
+    linear-gradient(180deg, rgba(59,130,246,.18), rgba(34,197,94,.18)),
+    var(--bg-elev);
+  box-shadow: 0 6px 18px rgba(59,130,246,.20);
 }
+.btn-izulu:hover {
+  border-color: color-mix(in lab, var(--bead-green) 60%, var(--border));
+  box-shadow: 0 10px 24px rgba(34,197,94,.28);
+}
+
+/* Ensure white background when exporting so text is readable on print */
+.pdf-snapshot-bg { background: #ffffff !important; color: #111827 !important; }
 .pdf-snapshot-bg .card,
 .pdf-snapshot-bg .table,
 .pdf-snapshot-bg .pairs .pair-item,
 .pdf-snapshot-bg .search-input {
-  background: #ffffff !important;
-  border-color: #e5e7eb !important;
-  box-shadow: none !important;
+  background: #ffffff !important; border-color: #e5e7eb !important; box-shadow: none !important;
 }
 .pdf-snapshot-bg .chip,
 .pdf-snapshot-bg .vocab-word,
 .pdf-snapshot-bg .word-head {
-  background: #f3f4f6 !important;
-  border-color: #e5e7eb !important;
-  color: #111827 !important;
+  background: #f3f4f6 !important; border-color: #e5e7eb !important; color: #111827 !important;
 }
 .pdf-snapshot-bg .muted { color: #6b7280 !important; }
+
+
+/* ====== Auth layout ====== */
+.auth-wrap {
+  min-height: calc(100vh - 120px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 520px;
+  padding-top: calc(var(--pad-lg) + 6px); /* room for card trim */
+}
+
+/* Forms */
+.form { display: grid; gap: .9rem; margin-top: .6rem; }
+.label { display: grid; gap: .35rem; font-weight: 600; }
+.input-wrap { position: relative; }
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elev);
+  color: var(--fg);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.input:focus {
+  border-color: color-mix(in lab, var(--primary) 45%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in lab, var(--primary) 25%, transparent);
+}
+.eye {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  border: 0; background: transparent; cursor: pointer; font-size: 1.05rem;
+  line-height: 1; color: var(--muted);
+}
+.form-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .8rem; margin-top: .2rem;
+}
+.checkbox { display: flex; align-items: center; gap: .5rem; }
+.link { text-decoration: underline; cursor: pointer; }
+
+/* Alerts */
+.alert {
+  padding: .7rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+.alert.error {
+  border-color: color-mix(in lab, var(--bead-red) 60%, var(--border));
+  background: linear-gradient(180deg, rgba(225,29,72,.10), transparent);
+}
+
+/* Primary form button */
+.form-btn {
+  width: 100%;
+  margin-top: .2rem;
+}
+
+/* Make auth cards use same bead trim stronger */
+.auth-card::after { opacity: .28; }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { apiLogin } from "../auth/fakeAuth";
 import { useAuth } from "../auth/AuthContext";
+import { apiLogin } from "../auth/fakeAuth";
 
 export default function LoginPage() {
   const nav = useNavigate();
@@ -14,7 +14,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  const from = location.state?.from || "/";
+  // If Guard passed state, use it; else go to CorpusPage "/"
+  const from = location.state?.from ?? "/";
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -24,10 +25,11 @@ export default function LoginPage() {
       return;
     }
     setLoading(true);
+
     try {
-      const res = await apiLogin({ email, password: pw });
-      login(res);
-      nav(from, { replace: true });
+      const { token, refresh, user } = await apiLogin({ email, password: pw });
+      login({ token, refresh, user });
+      nav(from, { replace: true }); // 👉 lands on "/"
     } catch (e) {
       setErr(e.message || "Sign in failed.");
     } finally {
@@ -80,13 +82,18 @@ export default function LoginPage() {
             </div>
           </label>
 
-          <div className="form-row">
+          <div className="form-row" style={{ justifyContent: "space-between" }}>
             <label className="checkbox">
               <input type="checkbox" /> Remember me
             </label>
-            <Link className="muted link" to="/signup">
-              Don’t have an account? Sign up
-            </Link>
+            <div>
+              <Link className="muted link" to="/forgot" style={{ marginRight: 12 }}>
+                Forgot password?
+              </Link>
+              <Link className="muted link" to="/signup">
+                Sign up
+              </Link>
+            </div>
           </div>
 
           <button className="btn btn-izulu form-btn" type="submit" disabled={loading}>

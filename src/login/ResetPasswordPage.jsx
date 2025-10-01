@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiResetPassword } from "../auth/fakeAuth";
+import "./auth.css";
 
 function useQuery() {
   const { search } = useLocation();
@@ -61,7 +62,7 @@ export default function ResetPasswordPage() {
               type="password"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Enter a new password"
               autoComplete="new-password"
               required
             />

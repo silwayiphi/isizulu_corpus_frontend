@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { apiLogin } from "../auth/fakeAuth";
+import "./auth.css";
 
 export default function LoginPage() {
   const nav = useNavigate();
@@ -53,7 +54,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="enter your email"
               autoComplete="email"
               required
             />
@@ -67,7 +68,7 @@ export default function LoginPage() {
                 type={showPw ? "text" : "password"}
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
-                placeholder="••••••••"
+                placeholder="enter a password"
                 autoComplete="current-password"
                 required
               />

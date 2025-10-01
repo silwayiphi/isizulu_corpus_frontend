@@ -1,0 +1,174 @@
+/* =============================================================================
+   AUTHENTICATION PAGES STYLES
+   ---------------------------------------------------------------------------
+   Applies to SignIn, SignUp, Forgot Password, Reset Password
+=============================================================================*/
+
+/* Container for the page */
+.auth-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: #fff8f0; /* warm light background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card */
+.auth-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Titles */
+.hero-title {
+  font-size: 1.8rem;
+  color: #5c3a00;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.hero-sub {
+  font-size: 0.95rem;
+  color: #6b4e16;
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels & inputs */
+.label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #5c3a00;
+  font-size: 0.9rem;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.3rem;
+  border: 1.5px solid #d9b382; /* ochre */
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #a5631f;
+  box-shadow: 0 0 0 3px rgba(165, 99, 31, 0.2);
+}
+
+/* Password eye button */
+.eye {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 0.85rem;
+  margin-top: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-izulu {
+  background: #a5631f;
+  color: #fff;
+}
+
+.btn-izulu:hover {
+  background: #906000;
+  transform: translateY(-2px);
+}
+
+/* Links */
+.muted.link {
+  font-size: 0.9rem;
+  color: #8b5e3c;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.muted.link:hover {
+  color: #5c3a00;
+}
+
+/* Checkbox row */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.checkbox input {
+  margin-right: 0.3rem;
+}
+
+/* Alerts */
+.alert {
+  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.alert.error {
+  background: #fbeaea;
+  color: #b00020;
+  border: 1px solid #f5c2c2;
+}
+
+.alert.success {
+  background: #ebf9e9;
+  color: #3a5d00;
+  border: 1px solid #c7e5b0;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem 1.8rem;
+  }
+  .hero-title {
+    font-size: 1.5rem;
+  }
+}

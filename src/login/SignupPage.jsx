@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiSignup } from "../auth/fakeAuth";
+import "./auth.css";
 
 export default function SignupPage() {
   const nav = useNavigate();

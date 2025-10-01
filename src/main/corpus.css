@@ -1,359 +1,348 @@
-/* ============ Design Tokens (isiZulu beadwork palette) ============ */
+/* =============================================================================
+   isiZulu Corpus UI – Cultural Light Theme
+   ---------------------------------------------------------------------------
+   MODEL CONTRACT (important class names the model can target in generated HTML):
+   - Layout: .corpus-wrap, .section, .section-title, .section-header
+   - Cards: .card, .result-card, .result-header, .result-title, .result-body
+   - Search: .search-box, .search-input, .search-btn
+   - Buttons: .btn-izulu
+   ============================================================================= */
+
 :root {
-  /* Deep charcoal night with subtle indigo tint */
-  --bg: #0b0e12;
-  --bg-elev: #11161c;
-  --card: #0f141a;
-  --fg: #f1f5f9;
-  --muted: #93a3b5;
+  /* Backgrounds */
+  --bg: #faf9f6;          /* soft warm white */
+  --bg-elev: #ffffff;     /* card surface */
+  --card: #fdfdfd;
+  --fg: #2a1a13;          /* dark brown text */
+  --muted: #6f5b4a;       /* muted brown */
 
-  /* Beadwork accents: red, yellow, green, blue, white, black */
-  --bead-red:   #e11d48; /* amacici red */
-  --bead-yellow:#f59e0b;
-  --bead-green: #16a34a;
-  --bead-blue:  #3b82f6;
-  --bead-white: #f8fafc;
-  --bead-black: #0b0e12;
+  /* Zulu cultural tones */
+  --bead-red:   #d71c24;  /* love */
+  --bead-yellow:#f7c708;  /* wealth */
+  --bead-green: #3b7d2b;  /* fertility */
+  --bead-blue:  #2676c2;  /* faithfulness */
+  --bead-white: #ffffff;  /* purity */
+  --bead-black: #000000;  /* ancestry */
+  --bead-brown: #8b5a2b;  /* earthy grounding */
 
-  /* Primary/accent lean blue/green like refined bead glass */
-  --primary: #3b82f6;
-  --accent:  #22d3ee;
+  /* Brand */
+  --primary: var(--bead-green);
+  --accent:  var(--bead-red);
 
-  --border: #1b2430;
-  --chip:   #0b1a2a;
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  /* Borders & shadows */
+  --border: #e1d9d2;
+  --chip:   #f4eee8;
+  --shadow: 0 6px 18px rgba(0,0,0,.15);
 
-  --radius-lg: 18px;
-  --radius-md: 12px;
+  /* Radii */
+  --radius-lg: 20px;
+  --radius-md: 14px;
   --radius-sm: 10px;
 
-  --pad-lg: 1.2rem;
-  --pad-md: .9rem;
-  --pad-sm: .65rem;
+  /* Spacing */
+  --pad-lg: 1.3rem;
+  --pad-md: 0.95rem;
+  --pad-sm: 0.65rem;
 
-  --transition: 200ms ease;
+  /* Motion */
+  --transition: 220ms ease;
 }
 
-/* Optional light mode that still nods to beadwork */
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fafafa;
-    --bg-elev: #ffffff;
-    --card: #ffffff;
-    --fg: #0f1720;
-    --muted: #4b5563;
-
-    --primary: #2563eb;
-    --accent:  #0ea5e9;
-    --border:  #e6eaf0;
-    --chip:    #eef2ff;
-    --shadow:  0 8px 24px rgba(2, 8, 23, 0.08);
-  }
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+/* Base */
 body {
-  margin: 0;
-  background:
-    linear-gradient(180deg, var(--bg) 0%, #0a1118 100%),
-    radial-gradient(90% 50% at 0% 0%, rgba(59,130,246,.08), transparent 60%);
+  background: var(--bg);
   color: var(--fg);
-  font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Ubuntu", "Nunito", system-ui, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
 }
 
+/* Layout wrapper */
 .corpus-wrap {
-  max-width: 980px;
-  margin: 48px auto 88px; /* leave space so content isn't under the sticky bar */
-  padding: 0 20px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--pad-lg);
 }
 
-/* ============ Cards & Surfaces ============ */
-.card {
-  background:
-    radial-gradient(120% 140% at 0% 0%, rgba(59,130,246,.08), transparent 60%),
-    radial-gradient(90% 120% at 100% 0%, rgba(34,211,238,.07), transparent 55%),
-    var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+/* Section */
+.section {
   padding: var(--pad-lg);
-  box-shadow: var(--shadow);
-  transition: border-color var(--transition), transform var(--transition);
-  position: relative;
+  margin-bottom: 2rem;
+  background: var(--bg);
 }
-.card::after {
-  /* subtle geometric bead chevron trim */
+
+.section-title {
+  font-family: "Nunito", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bead-brown);
+  border-left: 6px solid var(--primary);
+  padding-left: .6rem;
+  margin-bottom: 1rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pad-md);
+}
+
+/* Cards */
+.card, .result-card {
+  position: relative;
+  background: var(--bg-elev);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: var(--pad-md);
+  margin-bottom: 1.2rem;
+  transition: transform var(--transition);
+}
+.card:hover, .result-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Beadwork trim (Zulu pattern) */
+.card::after, .result-card::after {
   content: "";
   position: absolute;
   inset: -1px -1px auto -1px;
-  height: 6px;
+  height: 8px;
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
   background:
-    repeating-linear-gradient(90deg,
-      var(--bead-red) 0 10px,
-      var(--bead-yellow) 10px 20px,
-      var(--bead-green) 20px 30px,
-      var(--bead-blue) 30px 40px,
-      var(--bead-white) 40px 50px,
-      var(--bead-black) 50px 60px);
-  opacity: .18;
-  pointer-events: none;
-}
-.card:hover { border-color: color-mix(in lab, var(--primary) 30%, var(--border)); transform: translateY(-1px); }
-
-.section { margin: 18px 0; }
-
-.section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: .75rem; margin-bottom: .5rem;
-}
-.section-title {
-  margin: 0; font-size: 1.05rem; letter-spacing: .2px;
-  background: linear-gradient(90deg, var(--fg), color-mix(in lab, var(--primary) 35%, var(--fg)));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+    repeating-linear-gradient(135deg,
+      var(--bead-black) 0 12px,
+      var(--bead-white) 12px 24px,
+      var(--bead-red) 24px 36px,
+      var(--bead-yellow) 36px 48px,
+      var(--bead-green) 48px 60px,
+      var(--bead-blue) 60px 72px,
+      var(--bead-brown) 72px 84px);
+  opacity: .5;
 }
 
-/* ============ Header ============ */
+/* Result headers */
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .6rem;
+}
+
+.result-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.result-body {
+  font-size: 0.95rem;
+  color: var(--fg);
+}
+
+/* Hero */
 .hero-title {
-  margin: 0 0 .35rem 0; font-weight: 800; font-size: 1.7rem; letter-spacing: .3px;
-  background: linear-gradient(90deg, var(--bead-red), var(--bead-yellow), var(--bead-green), var(--bead-blue));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 1px 0 rgba(0,0,0,.35));
-}
-.hero-sub { margin: 0 0 1rem; color: var(--muted); }
-
-/* ============ Search ============ */
-.searchbar { display: grid; gap: .6rem; margin: 14px 0 18px; }
-.search-input {
-  width: 100%; padding: 14px 16px;
-  border: 1px solid var(--border); border-radius: var(--radius-md);
-  color: var(--fg); background: var(--bg-elev); outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
-}
-.search-input:focus {
-  border-color: color-mix(in lab, var(--primary) 45%, var(--border));
-  box-shadow: 0 0 0 3px color-mix(in lab, var(--primary) 25%, transparent);
-}
-
-/* ============ Featured Translation ============ */
-.featured { display: grid; gap: .35rem; margin-bottom: 12px; }
-.featured-content { display: grid; gap: .35rem; }
-.featured-primary { margin: 0; font-size: 1.35rem; font-weight: 700; }
-.featured-secondary { margin: 0; color: var(--muted); }
-
-/* ============ Proverb Result Card ============ */
-.result-card {}
-.result-header { margin-bottom: .4rem; }
-.result-title { margin: 0; font-size: 1.15rem; }
-.result-meta { margin-top: .25rem; display: flex; align-items: center; gap: .5rem; }
-.badge {
-  font-size: .74rem; padding: .18rem .55rem; border-radius: 999px;
-  background: var(--chip); color: var(--fg); border: 1px solid var(--border);
-}
-.dot { color: var(--muted); }
-.result-body { display: grid; gap: .8rem; margin-top: .6rem; }
-.result-row { display: grid; gap: .25rem; }
-.result-label { font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-.result-value { font-size: 1rem; }
-.morph-list { margin: .25rem 0 0 1.05rem; padding: 0; list-style: disc; }
-.morph-list li { margin-bottom: .2rem; }
-.morph-list code {
-  background: hsl(0, 0%, 3%); padding: 0 .35rem; border-radius: 6px; border: 1px solid var(--border);
-}
-
-/* ============ Lists & Table ============ */
-.cp-list { margin: .25rem 0 0 1.05rem; padding: 0; }
-.cp-sublist { margin: .35rem 0 0 1.05rem; padding: 0; list-style: disc; }
-.cp-sublist li { margin-bottom: .42rem; line-height: 1.45; }
-.word-head { display: inline-block; padding: .08rem .35rem; border-radius: 8px; background: var(--chip); border: 1px solid var(--border); }
-
-.pairs .pair-item {
-  display: inline-flex; align-items: center; gap: .5rem;
-  background: var(--bg-elev); border: 1px solid var(--border);
-  border-radius: 12px; padding: .28rem .5rem; margin: .18rem .35rem .18rem 0;
-}
-.pair { font-weight: 600; }
-.arrow { color: var(--muted); }
-
-.table-wrap { overflow: auto; border-radius: 12px; border: 1px solid var(--border); }
-.table { width: 100%; border-collapse: collapse; background: var(--bg-elev); }
-.table th, .table td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); }
-.table th { font-weight: 600; }
-.table tr:last-child td { border-bottom: none; }
-
-/* Badges / chips / counters */
-.count-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 26px; height: 26px; padding: 0 8px;
-  border-radius: 999px; background: var(--chip); border: 1px solid var(--border); color: var(--fg);
-  font-size: .8rem;
-}
-.tag-list { display: grid; gap: .25rem; margin: .25rem 0 0; padding-left: 1.05rem; list-style: disc; }
-.tag { line-height: 1.3; }
-.chip {
-  display: inline-block; font-size: .78rem;
-  padding: .22rem .6rem; border-radius: 999px;
-  background: var(--chip); border: 1px solid var(--border); color: var(--fg);
-  margin-right: .35rem; margin-top: .35rem;
-}
-
-/* Text utilities */
-.muted { color: var(--muted); }
-
-/* Decorative bead divider */
-.bead-divider {
-  display: flex; gap: .4rem; justify-content: center; align-items: center;
-  margin: 22px 0 10px;
-}
-.bead-divider .dot {
-  width: 10px; height: 10px; border-radius: 999px; display: inline-block;
-  border: 1px solid var(--border);
-}
-.bead-divider .dot.r { background: var(--bead-red); }
-.bead-divider .dot.y { background: var(--bead-yellow); }
-.bead-divider .dot.g { background: var(--bead-green); }
-.bead-divider .dot.b { background: var(--bead-blue); }
-.bead-divider .dot.w { background: var(--bead-white); }
-.bead-divider .dot.k { background: var(--bead-black); }
-
-/* Footer */
-.footer {
-  margin-top: 18px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--muted);
-}
-
-/* Motion polish */
-.card, .search-input, .pair-item, .chip { will-change: transform, border-color, box-shadow; }
-.vocab-row { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; }
-.vocab-word { font-weight:700; padding:.08rem .35rem; border-radius:8px; background: var(--chip); border:1px solid var(--border); }
-.syn-chips { display:flex; flex-wrap:wrap; gap:.35rem; margin-left:.25rem; }
-
-/* ============ Bottom sticky bar ============ */
-.bottom-bar {
-  position: sticky;
-  bottom: 0;
-  width: 100%;
-  padding: 0 12px 12px;
-  margin-top: 24px;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,.25));
-  backdrop-filter: blur(8px);
-}
-.bottom-bar-inner {
-  max-width: 980px; margin: 0 auto;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  border-radius: 14px;
-  padding: .6rem .8rem;
-  display: flex; justify-content: center;
+  font-size: 2.3rem;
+  font-weight: 800;
+  background: linear-gradient(
+    90deg,
+    var(--bead-red),
+    var(--bead-yellow),
+    var(--bead-green),
+    var(--bead-blue),
+    var(--bead-black),
+    var(--bead-brown)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1.2rem;
 }
 
 /* Buttons */
-.btn {
-  padding: .6rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-elev);
-  color: var(--fg);
-  cursor: pointer;
-  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-  font-weight: 600;
-}
-.btn:hover { transform: translateY(-1px); border-color: color-mix(in lab, var(--primary) 35%, var(--border)); }
-
-/* isiZulu bead accent button */
 .btn-izulu {
-  border: 1px solid color-mix(in lab, var(--bead-blue) 60%, var(--border));
+  display: inline-block;
+  padding: .6rem 1.1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  border: 2px solid var(--bead-brown);
   background:
-    linear-gradient(180deg, rgba(59,130,246,.18), rgba(34,197,94,.18)),
+    linear-gradient(180deg, rgba(247,199,8,.15), rgba(59,125,43,.1)),
     var(--bg-elev);
-  box-shadow: 0 6px 18px rgba(59,130,246,.20);
+  color: var(--fg);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  cursor: pointer;
+  transition: all var(--transition);
 }
 .btn-izulu:hover {
-  border-color: color-mix(in lab, var(--bead-green) 60%, var(--border));
-  box-shadow: 0 10px 24px rgba(34,197,94,.28);
+  border-color: var(--bead-red);
+  color: var(--bead-black);
+  box-shadow: 0 6px 18px rgba(215,28,36,.25);
+  transform: translateY(-2px);
 }
 
-/* Ensure white background when exporting so text is readable on print */
-.pdf-snapshot-bg { background: #ffffff !important; color: #111827 !important; }
-.pdf-snapshot-bg .card,
-.pdf-snapshot-bg .table,
-.pdf-snapshot-bg .pairs .pair-item,
-.pdf-snapshot-bg .search-input {
-  background: #ffffff !important; border-color: #e5e7eb !important; box-shadow: none !important;
+/* Search */
+.search-box {
+  display:flex;
+  gap: .4rem;
+  margin: 1rem 0;
 }
-.pdf-snapshot-bg .chip,
-.pdf-snapshot-bg .vocab-word,
-.pdf-snapshot-bg .word-head {
-  background: #f3f4f6 !important; border-color: #e5e7eb !important; color: #111827 !important;
-}
-.pdf-snapshot-bg .muted { color: #6b7280 !important; }
-
-
-/* ====== Auth layout ====== */
-.auth-wrap {
-  min-height: calc(100vh - 120px);
-  display: grid;
-  place-items: center;
-  padding: 32px 16px;
-}
-.auth-card {
-  width: 100%;
-  max-width: 520px;
-  padding-top: calc(var(--pad-lg) + 6px); /* room for card trim */
-}
-
-/* Forms */
-.form { display: grid; gap: .9rem; margin-top: .6rem; }
-.label { display: grid; gap: .35rem; font-weight: 600; }
-.input-wrap { position: relative; }
-.input {
-  width: 100%;
-  padding: 12px 14px;
+.search-input {
+  flex: 1;
+  padding: .55rem .85rem;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  border-radius: 12px;
   background: var(--bg-elev);
   color: var(--fg);
-  outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
 }
-.input:focus {
-  border-color: color-mix(in lab, var(--primary) 45%, var(--border));
-  box-shadow: 0 0 0 3px color-mix(in lab, var(--primary) 25%, transparent);
+.search-btn {
+  padding: .55rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--bead-white);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition);
 }
-.eye {
-  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-  border: 0; background: transparent; cursor: pointer; font-size: 1.05rem;
-  line-height: 1; color: var(--muted);
+.search-btn:hover {
+  background: var(--accent);
 }
-.form-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: .8rem; margin-top: .2rem;
-}
-.checkbox { display: flex; align-items: center; gap: .5rem; }
-.link { text-decoration: underline; cursor: pointer; }
 
-/* Alerts */
-.alert {
-  padding: .7rem .9rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+/* Footer with beadwork strip */
+footer {
+  margin-top: 2rem;
+  padding: var(--pad-md);
+  text-align: center;
   background: var(--bg-elev);
+  border-top: 4px solid var(--bead-brown);
+  position: relative;
 }
-.alert.error {
-  border-color: color-mix(in lab, var(--bead-red) 60%, var(--border));
-  background: linear-gradient(180deg, rgba(225,29,72,.10), transparent);
+footer::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 8px;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--bead-red) 0 12px,
+      var(--bead-yellow) 12px 24px,
+      var(--bead-green) 24px 36px,
+      var(--bead-blue) 36px 48px,
+      var(--bead-black) 48px 60px,
+      var(--bead-brown) 60px 72px,
+      var(--bead-white) 72px 84px);
+  opacity: .6;
 }
 
-/* Primary form button */
-.form-btn {
-  width: 100%;
-  margin-top: .2rem;
+/* NAVIGATION DROPDOWN */
+.nav-dropdown {
+  margin: 1.5rem 0;
+  text-align: center;
+  position: relative;
+  display: inline-block;
 }
 
-/* Make auth cards use same bead trim stronger */
-.auth-card::after { opacity: .28; }
+.nav-dropdown select {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid #745003; /* brown border */
+  background-color: #fff;      /* white for clarity */
+  color: #745003;              /* brown text */
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-dropdown select:hover {
+  border-color: #906c03;       /* darker brown on hover */
+  transform: translateY(-1px);
+}
+
+.nav-dropdown option {
+  font-weight: 500;
+}
+
+.corpus-wrap {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.hero-sub {
+  color: #666;
+  font-size: 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+  margin: 15px 0;
+}
+
+.section-title {
+  border-left: 4px solid #624c05;
+  padding-left: 8px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #7b4f03;
+}
+
+.result-text {
+  font-size: 1.1rem;
+  color: #694a04;
+}
+
+.badge {
+  background: #776103;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-right: 6px;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.btn-izulu {
+  background: #4b4501;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-izulu:hover {
+  background: #9c9c04;
+}
+
+.bottom-bar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+
